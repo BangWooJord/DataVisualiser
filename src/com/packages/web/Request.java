@@ -7,5 +7,6 @@ import java.io.IOException;
 public class Request {
     public static void Fetch(String url) throws IOException {
         JSONObject json = Parser.readJsonFromUrl(url);
+        System.out.println(json.get("results"));
     }
 }
