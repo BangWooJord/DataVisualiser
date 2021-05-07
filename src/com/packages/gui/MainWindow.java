@@ -18,7 +18,6 @@ public class MainWindow extends JFrame {
             web_btn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Request.Fetch();
                 }
             });
             add(web_btn);
