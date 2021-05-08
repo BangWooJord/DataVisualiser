@@ -16,14 +16,20 @@ public class MainWindow extends JFrame {
 
         //M: button that calls web visualise
         JButton web_btn = new JButton("Fetch");
+
             web_btn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    try {
-                        Request.Fetch("https://api.usa.gov/crime/fbi/sapi/api/data/nibrs/fondling/offense/national/WEAPONS?api_key=txqbrGOTn0SSuaU69VVFdjS76Tlb8EOq76uPEexx");
-                    }catch (IOException ioException){
-                        System.out.println("Request fetch caught an error: " + ioException.getMessage());
-                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Request.Fetch("");
+                            }catch(IOException ioException){
+                                System.out.println("Request fetch caught an error: " + ioException.getMessage());
+                            }
+                        }
+                    });
                 }
             });
             add(web_btn);
