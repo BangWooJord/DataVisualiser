@@ -4,8 +4,6 @@ import com.packages.web.Request;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class MainWindow extends JFrame {
@@ -15,23 +13,21 @@ public class MainWindow extends JFrame {
             setSize(w, h);
             setTitle(title);
 
-        //M: Search input
+        //M: A layout that lets us position multiple widgets
         JPanel panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
+        //M: Search input
         JTextField web_input = new JTextField(1);
             panel.add(web_input);
         //M: button that calls web visualise
         JButton web_btn = new JButton("Fetch");
             web_btn.addActionListener(e -> {
-                //System.out.println(web_input.getText());
-                //new Thread(() -> {
-                    try {
-                        Request.Fetch(web_input.getText());
-                    }catch(IOException ioException){
-                        System.out.println("Request fetch caught an error: " + ioException.getMessage());
-                    }
-                //});
+                try {
+                    Request.Fetch(web_input.getText());
+                }catch(IOException ioException){
+                    System.out.println("Request fetch caught an error: " + ioException.getMessage());
+                }
             });
             panel.add(web_btn);
 

@@ -7,25 +7,37 @@ import java.io.*;
 import java.util.HashMap;
 
 class Keywords{
-    HashMap<String, Boolean> offense = new HashMap<String, Boolean>();
+    HashMap<String, Boolean> offense = new HashMap<>();
     public Keywords() throws IOException{
-        File folder = new File("D:\\JavaProjects\\DataVisualiser\\src\\com\\packages\\web\\keywords");
+        //M: folder with all the keywords files
+        File folder = new File("src/com/packages/web/keywords");
         if(!folder.exists()) {
             System.out.println("Couldn't open keywords folder");
             return;
         }
-        for (final File file : folder.listFiles()) {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String[] keywords = br.readLine().split(",");
-            for (final String word : keywords) {
-                offense.put(word, true);
-            }
+        //M: iterating through a folder
+        for (final var file : folder.listFiles()) {
+            //M: Filling each keyword "database" with keywords from corresponding files
+            if(file.getName().equals("offense.txt"))
+                offense = fillMap(new BufferedReader(new FileReader(file)));
         }
     }
+    //M: Fills HashMap with values from provided buffer
+    private HashMap<String, Boolean> fillMap(BufferedReader br) throws IOException {
+        HashMap<String, Boolean> hashMap = new HashMap<>();
+
+        String[] keywords = br.readLine().split(",");
+        for (final var word : keywords) {
+            hashMap.put(word, true);
+        }
+        return hashMap;
+    }
+    //M: Check if a keyword belongs to offense
     public boolean isOffence(String keyword){
         return offense.get(keyword) != null;
     }
 }
+
 
 //M: Class that's gonna fetch JSON from web
 public class Request {
@@ -39,7 +51,7 @@ public class Request {
             built_url.append("api/data/nibrs/");
 
             String[] user_keywords = input.split(" ");
-            for(final String word : user_keywords){
+            for(final var word : user_keywords){
                 if(keywords.isOffence(word)){
                     built_url.append(word);
                     break;
@@ -61,7 +73,7 @@ public class Request {
 
         JSONObject json = Parser.readJsonFromUrl(url);
         JSONArray array = json.getJSONArray("results");
-        for(Object obj : array){
+        for(var obj : array){
             System.out.println(((JSONObject)obj).get("count"));
         }
     }
