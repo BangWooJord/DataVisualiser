@@ -7,6 +7,6 @@ App that visualises data searched by user. Also supports excel files.
   - JSON-Java 2021.03.07
   - Swing 
 
-###Contributors: 
+### Contributors: 
   - https://github.com/BangWooJord
   - https://github.com/Artewer
