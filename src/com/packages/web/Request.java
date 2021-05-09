@@ -1,12 +1,17 @@
 package com.packages.web;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 class Keywords{
     HashMap<String, String> keywordMap = new HashMap<>();
@@ -42,6 +47,22 @@ class Keywords{
 public class Request {
     private static final String link_base = "https://api.usa.gov/crime/fbi/sapi/";
     private static final String api_key = "txqbrGOTn0SSuaU69VVFdjS76Tlb8EOq76uPEexx";
+
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
+    }
+    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+        try (InputStream is = new URL(url).openStream()) {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            String jsonText = readAll(rd);
+            return new JSONObject(jsonText);
+        }
+    }
     public static String buildRequest(String input){
         try {
             Keywords keywords = new Keywords();
@@ -56,7 +77,7 @@ public class Request {
                     break;
                 }
             }
-            built_url.append("/offender/national/COUNT?api_key="+api_key);
+            built_url.append("/offender/national/age?api_key="+api_key);
             return built_url.toString();
         }catch(IOException exc){
             System.out.println("Keywords constructor threw an error: " +
@@ -66,14 +87,16 @@ public class Request {
 
         return null;
     }
-    public static void Fetch(String input) throws IOException {
+    public static ArrayList<HashMap<String, String>> Fetch(String input) throws IOException {
         String url = buildRequest(input);
-        if(url == null) return;
+        if(url == null) return null;
 
-        JSONObject json = Parser.readJsonFromUrl(url);
+        JSONObject json =  Request.readJsonFromUrl(url);
         JSONArray array = json.getJSONArray("results");
-        for(var obj : array){
-            System.out.println(((JSONObject)obj).get("count"));
-        }
+
+        return Parser.Parse(array);
+        /*for(var obj : array){
+            System.out.println(((JSONObject)obj).keySet());
+        }*/
     }
 }

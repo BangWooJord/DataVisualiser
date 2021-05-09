@@ -30,7 +30,7 @@ public class MainWindow extends JFrame {
                 }
             });
             panel.add(web_btn);
-
+        //javafx.scene.chart - lib for java graphs and etc
         add(panel, BorderLayout.CENTER);
         //M: Making the window visible
         setVisible(true);
