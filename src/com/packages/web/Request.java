@@ -3,39 +3,38 @@ package com.packages.web;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.*;
 import java.util.HashMap;
 
 class Keywords{
-    HashMap<String, Boolean> offense = new HashMap<>();
-    public Keywords() throws IOException{
+    HashMap<String, String> keywordMap = new HashMap<>();
+    public Keywords() throws IOException {
         //M: folder with all the keywords files
         File folder = new File("src/com/packages/web/keywords");
-        if(!folder.exists()) {
+        if (!folder.exists()) {
             System.out.println("Couldn't open keywords folder");
             return;
         }
         //M: iterating through a folder
         for (final var file : folder.listFiles()) {
             //M: Filling each keyword "database" with keywords from corresponding files
-            if(file.getName().equals("offense.txt"))
-                offense = fillMap(new BufferedReader(new FileReader(file)));
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            //M: removing file extension
+            String pure_file_name = FilenameUtils.removeExtension(file.getName());
+            //M: getting each keyword from file into an array
+            String[] keywords = br.readLine().split(",");
+            for (final var word : keywords) {
+                keywordMap.put(word, pure_file_name);
+            }
         }
     }
-    //M: Fills HashMap with values from provided buffer
-    private HashMap<String, Boolean> fillMap(BufferedReader br) throws IOException {
-        HashMap<String, Boolean> hashMap = new HashMap<>();
+    //M: returns type of the input key
+    public String getKeyType(String key){
+            return keywordMap.get(key);
+    }
 
-        String[] keywords = br.readLine().split(",");
-        for (final var word : keywords) {
-            hashMap.put(word, true);
-        }
-        return hashMap;
-    }
-    //M: Check if a keyword belongs to offense
-    public boolean isOffence(String keyword){
-        return offense.get(keyword) != null;
-    }
 }
 
 
@@ -52,7 +51,7 @@ public class Request {
 
             String[] user_keywords = input.split(" ");
             for(final var word : user_keywords){
-                if(keywords.isOffence(word)){
+                if(keywords.getKeyType(word).equals("offense")){
                     built_url.append(word);
                     break;
                 }
